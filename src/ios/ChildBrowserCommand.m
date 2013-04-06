@@ -27,7 +27,17 @@
 - (void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
 {	
     self.callbackId = [arguments objectAtIndex:0];
-	
+
+    // objectAtIndex 0 is the callback id
+    NSString *url = (NSString*) [arguments objectAtIndex:1];
+    NSURL *finalUrl = [NSURL URLWithString:url];
+    
+    if ([[finalUrl scheme] isEqualToString:@"tel"] || [[finalUrl scheme] isEqualToString:@"sms"])
+    {
+        [[UIApplication sharedApplication] openURL:finalUrl];
+        return;
+    }
+    
     if (self.childBrowser == nil) {
 #if __has_feature(objc_arc)
         self.childBrowser = [[ChildBrowserViewController alloc] initWithScale:NO];
@@ -41,9 +51,6 @@
     NSLog(@"showLocationBar %d",(int)[[options objectForKey:@"showLocationBar"] boolValue]);
 
     [self.viewController presentModalViewController:self.childBrowser animated:YES];
-        
-    // objectAtIndex 0 is the callback id
-    NSString *url = (NSString*) [arguments objectAtIndex:1];
     
     [self.childBrowser resetControls];
     [self.childBrowser loadURL:url];
