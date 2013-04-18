@@ -64,14 +64,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-	self.refreshBtn.image = [UIImage imageNamed:[[self class]
-                                                 resolveImageResource:@"ChildBrowser.bundle/but_refresh"]];
-	self.backBtn.image = [UIImage imageNamed:[[self class]
-                                              resolveImageResource:@"ChildBrowser.bundle/arrow_left"]];
-	self.fwdBtn.image = [UIImage imageNamed:[[self class]
-                                        resolveImageResource:@"ChildBrowser.bundle/arrow_right"]];
-	self.safariBtn.image = [UIImage imageNamed:[[self class]
-                                           resolveImageResource:@"ChildBrowser.bundle/compass"]];
+	self.refreshBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/but_refresh"];
+    self.backBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_left.png"];
+	self.fwdBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_right.png"];
+	self.safariBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/compass.png"];
 
 	self.webView.delegate = self;
 	self.webView.scalesPageToFit = TRUE;
