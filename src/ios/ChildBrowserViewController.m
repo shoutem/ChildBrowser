@@ -23,28 +23,6 @@
 @synthesize spinner, webView, addressLabel, toolbar;
 @synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn;
 
-//    Add *-72@2x.png images to ChildBrowser.bundle
-//    Just duplicate and rename - @RandyMcMillan
-
-+ (NSString*) resolveImageResource:(NSString*)resource
-{
-	NSString* systemVersion = [[UIDevice currentDevice] systemVersion];
-	BOOL isLessThaniOS4 = ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedAscending);
-	
-	// the iPad image (nor retina) differentiation code was not in 3.x, and we have to explicitly set the path
-	if (isLessThaniOS4)
-	{
-        return [NSString stringWithFormat:@"%@.png", resource];
-	} else if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES && [[UIScreen mainScreen] scale] == 2.00)
-    {
-	    return [NSString stringWithFormat:@"%@@2x.png", resource];
-    }
-
-	
-	return resource;
-}
-
-
 
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
 {
