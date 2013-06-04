@@ -22,7 +22,7 @@
 @synthesize delegate, orientationDelegate;
 @synthesize spinner, webView, addressLabel, toolbar;
 @synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn;
-
+@synthesize customNavigationBar, headerLogoUrl;
 
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
 {
@@ -50,6 +50,10 @@
 	self.webView.delegate = self;
 	self.webView.scalesPageToFit = TRUE;
 	self.webView.backgroundColor = [UIColor whiteColor];
+    
+    self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 44.0f) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
+    self.customNavigationBar.delegate = self;
+    [self.view addSubview:self.customNavigationBar];
     
 	NSLog(@"View did load");
 }
@@ -83,7 +87,9 @@
 	[self.safariBtn release];
 	[self.spinner release];
     [self.toolbar release];
-
+    [self.customNavigationBar release];
+    [self.headerLogoUrl release];
+    
 	[super dealloc];
 #endif
 }
@@ -248,6 +254,21 @@
     rect = addressLabel.frame;
     rect.origin.y+=44;
     [addressLabel setFrame:rect];
+}
+
+#pragma mark - CustomNavigationViewDelegate
+- (void)backButtonPressed
+{
+    [self onDoneButtonPress:self];
+}
+
+- (void)setHeaderLogoUrl:(NSString *)newHeaderLogoUrl
+{
+    if (headerLogoUrl == newHeaderLogoUrl)
+        return;
+    
+    headerLogoUrl = [newHeaderLogoUrl copy];
+    [self.customNavigationBar setHeaderLogo:headerLogoUrl];
 }
 
 #pragma mark - Gesture Recognizer

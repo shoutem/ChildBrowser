@@ -47,6 +47,9 @@
         self.childBrowser.delegate = self;
         self.childBrowser.orientationDelegate = self.viewController;
     }
+    
+    if ([options objectForKey:@"navigationBarLogo"])
+        childBrowser.headerLogoUrl = [options objectForKey:@"navigationBarLogo"];
 
     NSLog(@"showLocationBar %d",(int)[[options objectForKey:@"showLocationBar"] boolValue]);
 
