@@ -24,12 +24,12 @@
     return self;
 }
 
-- (void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
+-(void) showWebPage:(CDVInvokedUrlCommand *)command
 {	
-    self.callbackId = [arguments objectAtIndex:0];
+    self.callbackId = command.callbackId;
 
     // objectAtIndex 0 is the callback id
-    NSString *url = (NSString*) [arguments objectAtIndex:1];
+    NSString *url = [command argumentAtIndex:0];
     NSURL *finalUrl = [NSURL URLWithString:url];
     
     if ([[finalUrl scheme] isEqualToString:@"tel"] || [[finalUrl scheme] isEqualToString:@"sms"])
@@ -47,6 +47,8 @@
         self.childBrowser.delegate = self;
         self.childBrowser.orientationDelegate = self.viewController;
     }
+    
+    NSDictionary *options = [command argumentAtIndex:1];
     
     if ([options objectForKey:@"navigationBarLogo"])
         childBrowser.headerLogoUrl = [options objectForKey:@"navigationBarLogo"];

@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSNumber *LOCATION_CHANGE_EVENT;
 @property (nonatomic, strong) NSNumber *OPEN_EXTERNAL_EVENT;
 
--(void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+-(void) showWebPage:(CDVInvokedUrlCommand *)command;
 -(void) onChildLocationChange:(NSString*)newLoc;
 
 -(NSDictionary*) dictionaryForEvent:(NSNumber*)event;
