@@ -214,7 +214,7 @@
     rect.origin.y = self.view.frame.size.height-(44+26);
     [addressLabel setFrame:rect];
     rect=webView.frame;
-    rect.size.height= self.view.frame.size.height-(44+26);
+    rect.size.height= self.view.frame.size.height-(44);
     [webView setFrame:rect];
     [addressLabel setHidden:NO];
     [toolbar setHidden:NO];
@@ -222,14 +222,18 @@
 
 - (void)showLocationBar:(BOOL)isShow
 {
-    if(isShow)
-        return;
+    self.showingNavigation = isShow;
+    
     //the addreslabel heigth 21 toolbar 44
     CGRect rect = webView.frame;
-    rect.size.height+=(26+44);
+    rect.size.height+=(-44*isShow);
     [webView setFrame:rect];
+    if(isShow)
+        return;
+    
     [addressLabel setHidden:YES];
     [toolbar setHidden:YES];
+    [self.view setNeedsLayout];
 }
 
 - (void)showAddress:(BOOL)isShow
@@ -237,7 +241,7 @@
     if(isShow)
         return;
     CGRect rect = webView.frame;
-    rect.size.height+=(26);
+    rect.size.height+=(0);
     [webView setFrame:rect];
     [addressLabel setHidden:YES];
     
@@ -248,11 +252,11 @@
     if(isShow)
         return;
     CGRect rect = webView.frame;
-    rect.size.height+=(44);
+    rect.size.height+=(0);
     [webView setFrame:rect];
     [toolbar setHidden:YES];
     rect = addressLabel.frame;
-    rect.origin.y+=44;
+    rect.origin.y+=0;
     [addressLabel setFrame:rect];
 }
 
