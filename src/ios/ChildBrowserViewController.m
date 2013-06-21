@@ -22,7 +22,7 @@
 @synthesize delegate, orientationDelegate;
 @synthesize spinner, webView, addressLabel, toolbar;
 @synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn;
-@synthesize customNavigationBar, headerLogoUrl;
+@synthesize customNavigationBar, headerLogoUrl, backButtonUrl;
 
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
 {
@@ -89,6 +89,7 @@
     [self.toolbar release];
     [self.customNavigationBar release];
     [self.headerLogoUrl release];
+    [self.backButtonUrl release];
     
 	[super dealloc];
 #endif
@@ -275,6 +276,14 @@
     [self.customNavigationBar setHeaderLogo:headerLogoUrl];
 }
 
+- (void)setBackButtonUrl:(NSString *)newBackButtonUrl
+{
+    if (backButtonUrl == newBackButtonUrl)
+        return;
+    
+    backButtonUrl = [newBackButtonUrl copy];
+    [self.customNavigationBar setBackButton:backButtonUrl];
+}
 #pragma mark - Gesture Recognizer
 
 - (void)addGestureRecognizer

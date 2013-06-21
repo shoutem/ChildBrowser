@@ -53,6 +53,9 @@
     if ([options objectForKey:@"navigationBarLogo"])
         childBrowser.headerLogoUrl = [options objectForKey:@"navigationBarLogo"];
 
+    if ([options objectForKey:@"backButton"])
+        childBrowser.backButtonUrl = [options objectForKey:@"backButton"];
+    
     [self.viewController presentModalViewController:self.childBrowser animated:YES];
     
     [self.childBrowser resetControls];

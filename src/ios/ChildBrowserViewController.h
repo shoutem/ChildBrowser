@@ -52,6 +52,7 @@
 @property (assign) BOOL isImage;
 @property (assign) BOOL scaleEnabled;
 @property (nonatomic, copy) NSString *headerLogoUrl;
+@property (nonatomic, copy) NSString *backButtonUrl;
 @property (assign) BOOL showingNavigation;
 
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled;
