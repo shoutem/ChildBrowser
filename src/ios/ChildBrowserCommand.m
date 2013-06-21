@@ -53,8 +53,6 @@
     if ([options objectForKey:@"navigationBarLogo"])
         childBrowser.headerLogoUrl = [options objectForKey:@"navigationBarLogo"];
 
-    NSLog(@"showLocationBar %d",(int)[[options objectForKey:@"showLocationBar"] boolValue]);
-
     [self.viewController presentModalViewController:self.childBrowser animated:YES];
     
     [self.childBrowser resetControls];
