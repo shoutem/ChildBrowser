@@ -269,7 +269,7 @@
 
 - (void)setHeaderLogoUrl:(NSString *)newHeaderLogoUrl
 {
-    if (headerLogoUrl == newHeaderLogoUrl)
+    if (headerLogoUrl == newHeaderLogoUrl || [newHeaderLogoUrl isKindOfClass:[NSNull class]] || newHeaderLogoUrl == nil)
         return;
     
     headerLogoUrl = [newHeaderLogoUrl copy];
@@ -278,7 +278,7 @@
 
 - (void)setBackButtonUrl:(NSString *)newBackButtonUrl
 {
-    if (backButtonUrl == newBackButtonUrl)
+    if (backButtonUrl == newBackButtonUrl || [newBackButtonUrl isKindOfClass:[NSNull class]] || newBackButtonUrl == nil)
         return;
     
     backButtonUrl = [newBackButtonUrl copy];
