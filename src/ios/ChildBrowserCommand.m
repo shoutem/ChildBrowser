@@ -9,6 +9,8 @@
 #import "ChildBrowserCommand.h"
 #import <Cordova/CDVViewController.h>
 
+#define kOpenWebPageInBrowserPrefix @"shoutem://openInBrowser?url="
+
 @implementation ChildBrowserCommand
 
 @synthesize callbackId, childBrowser, CLOSE_EVENT, LOCATION_CHANGE_EVENT, OPEN_EXTERNAL_EVENT;
@@ -30,6 +32,10 @@
 
     // objectAtIndex 0 is the callback id
     NSString *url = [command argumentAtIndex:0];
+    
+    if ([url hasPrefix:kOpenWebPageInBrowserPrefix])
+        url = [url substringFromIndex:[kOpenWebPageInBrowserPrefix length]];
+    
     NSURL *finalUrl = [NSURL URLWithString:url];
     
     if ([[finalUrl scheme] isEqualToString:@"tel"] || [[finalUrl scheme] isEqualToString:@"sms"])
@@ -37,6 +43,7 @@
         [[UIApplication sharedApplication] openURL:finalUrl];
         return;
     }
+    
     
     if (self.childBrowser == nil) {
 #if __has_feature(objc_arc)
