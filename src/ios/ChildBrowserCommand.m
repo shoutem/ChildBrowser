@@ -73,6 +73,8 @@
         [childBrowser showLocationBar:[[options objectForKey:@"showLocationBar"] boolValue]];
     if([options objectForKey:@"showNavigationBar"]!=nil)
         [childBrowser showNavigationBar:[[options objectForKey:@"showNavigationBar"] boolValue]];
+    
+    self.activeLoadedCallback = [command argumentAtIndex:2];
 }
 
 -(void) close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
@@ -114,6 +116,9 @@
     [result setKeepCallbackAsBool:YES];
 
     [self writeJavascript: [result toSuccessCallbackString:self.callbackId]];
+    
+    if (self.activeLoadedCallback)
+        [self writeJavascript:self.activeLoadedCallback];
 }
 
 -(NSDictionary*) dictionaryForEvent:(NSNumber*) event

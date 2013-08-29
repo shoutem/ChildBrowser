@@ -66,12 +66,12 @@ var ChildBrowser = (function (gap) {
      * @param url           The url to load
      * @param options       An object that specifies additional options
      */
-    ChildBrowser.showWebPage = function (url, options) {
+    ChildBrowser.showWebPage = function (url, options, urlLoadedCallback) {
         if (!options) {
             options = { showLocationBar: true };
         }
 
-        gap.exec(onEvent, onError, "ChildBrowser", "showWebPage", [url, options]);
+        gap.exec(onEvent, onError, "ChildBrowser", "showWebPage", [url, options, urlLoadedCallback]);
     };
 
     /**
