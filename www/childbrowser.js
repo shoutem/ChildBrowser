@@ -70,8 +70,12 @@ var ChildBrowser = (function (gap) {
         if (!options) {
             options = { showLocationBar: true };
         }
-
-        gap.exec(onEvent, onError, "ChildBrowser", "showWebPage", [url, options, urlLoadedCallback]);
+        
+        ChildBrowser.onLocationChange = urlLoadedCallback;
+        ChildBrowser.onClose = function() {
+            ChildBrowser.onLocationChange = undefined;
+        };
+        gap.exec(onEvent, onError, "ChildBrowser", "showWebPage", [url, options]);
     };
 
     /**
