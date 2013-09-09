@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSNumber *OPEN_EXTERNAL_EVENT;
 
 -(void) showWebPage:(CDVInvokedUrlCommand *)command;
+-(void) openExternal:(CDVInvokedUrlCommand *)command;
+
 -(void) onChildLocationChange:(NSString*)newLoc;
 
 -(NSDictionary*) dictionaryForEvent:(NSNumber*)event;

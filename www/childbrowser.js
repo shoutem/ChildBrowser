@@ -100,7 +100,7 @@ var ChildBrowser = (function (gap) {
                 gap.exec(null, null, "ChildBrowser", "openExternal", [url, usePhoneGap]);
             }
         } else {
-            ChildBrowser.showWebPage(url);
+            gap.exec(onEvent, onError, "ChildBrowser", "openExternal", [url]);
         };
     };
 

@@ -26,6 +26,13 @@
     return self;
 }
 
+-(void) openExternal:(CDVInvokedUrlCommand *)command
+{
+    NSString *url = [command argumentAtIndex:0];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
 -(void) showWebPage:(CDVInvokedUrlCommand *)command
 {	
     self.callbackId = command.callbackId;
