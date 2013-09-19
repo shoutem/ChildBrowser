@@ -54,8 +54,6 @@
     self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 44.0f) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
     self.customNavigationBar.delegate = self;
     [self.view addSubview:self.customNavigationBar];
-    
-	NSLog(@"View did load");
 }
 
 - (void)didReceiveMemoryWarning {
