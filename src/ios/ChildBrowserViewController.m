@@ -51,7 +51,7 @@
 	self.webView.scalesPageToFit = TRUE;
 	self.webView.backgroundColor = [UIColor whiteColor];
     
-    self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 44.0f) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
+    self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
     self.customNavigationBar.delegate = self;
     [self.view addSubview:self.customNavigationBar];
 }
@@ -210,10 +210,10 @@
 {
     
     CGRect rect = addressLabel.frame;
-    rect.origin.y = self.view.frame.size.height-(44+26);
+    rect.origin.y = self.view.frame.size.height-(NavigationViewHeight()+26);
     [addressLabel setFrame:rect];
     rect=webView.frame;
-    rect.size.height= self.view.frame.size.height-(44);
+    rect.size.height= self.view.frame.size.height-(NavigationViewHeight());
     [webView setFrame:rect];
     [addressLabel setHidden:NO];
     [toolbar setHidden:NO];
@@ -225,7 +225,7 @@
     
     //the addreslabel heigth 21 toolbar 44
     CGRect rect = webView.frame;
-    rect.size.height+=(-44*isShow);
+    rect.size.height+=(-NavigationViewHeight()*isShow);
     [webView setFrame:rect];
     if(isShow)
         return;
