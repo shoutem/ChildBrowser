@@ -51,7 +51,7 @@
 	self.webView.scalesPageToFit = TRUE;
 	self.webView.backgroundColor = [UIColor whiteColor];
     
-    self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
+    self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
     self.customNavigationBar.delegate = self;
     [self.view addSubview:self.customNavigationBar];
 }
