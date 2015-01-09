@@ -46,9 +46,11 @@
     self.backBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_left.png"];
 	self.fwdBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_right.png"];
 	self.safariBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/compass.png"];
+    
+    self.spinner.center = self.view.center;
 
 	self.webView.delegate = self;
-	self.webView.scalesPageToFit = TRUE;
+	self.webView.scalesPageToFit = YES;
 	self.webView.backgroundColor = [UIColor whiteColor];
     
     self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
@@ -69,8 +71,8 @@
 	NSLog(@"View did UN-load");
 }
 
-
-- (void)dealloc {
+- (void)dealloc
+{
 	self.webView.delegate = nil;
     self.delegate = nil;
     self.orientationDelegate = nil;
@@ -93,22 +95,25 @@
 #endif
 }
 
--(void)closeBrowser
+- (void)closeBrowser
 {
-	
-	if (self.delegate != NULL)
+	if (self.delegate != nil)
 	{
 		[self.delegate onClose];
 	}
-    if ([self respondsToSelector:@selector(presentingViewController)]) { 
+    
+    if ([self respondsToSelector:@selector(presentingViewController)])
+    {
         //Reference UIViewController.h Line:179 for update to iOS 5 difference - @RandyMcMillan
         [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
-    } else {
-        [[self parentViewController] dismissModalViewControllerAnimated:YES];
+    }
+    else
+    {
+        [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
--(IBAction) onDoneButtonPress:(id)sender
+- (IBAction)onDoneButtonPress:(id)sender
 {
     [self.webView stopLoading];
 	[self closeBrowser];
@@ -118,47 +123,43 @@
 }
 
 
--(IBAction) onSafariButtonPress:(id)sender
+- (IBAction)onSafariButtonPress:(id)sender
 {
-	
 	if (self.delegate != nil)
 	{
 		[self.delegate onOpenInSafari];
 	}
 	
-	if(isImage)
+	if (isImage)
 	{
-		NSURL* pURL = [[ [NSURL alloc] initWithString:imageURL ] autorelease];
-		[ [ UIApplication sharedApplication ] openURL:pURL  ];
+		NSURL* pURL = [[[NSURL alloc] initWithString:imageURL] autorelease];
+		[[UIApplication sharedApplication] openURL:pURL];
 	}
 	else
 	{
 		NSURLRequest *request = webView.request;
 		[[UIApplication sharedApplication] openURL:request.URL];
 	}
-
-	 
 }
-
 
 - (void)loadURL:(NSString*)url
 {
 	NSLog(@"Opening Url : %@",url);
 	 
-	if( [url hasSuffix:@".png" ]  || 
-	    [url hasSuffix:@".jpg" ]  || 
-		[url hasSuffix:@".jpeg" ] || 
-		[url hasSuffix:@".bmp" ]  || 
-		[url hasSuffix:@".gif" ]  )
+	if ([url hasSuffix:@".png" ] ||
+	    [url hasSuffix:@".jpg" ] ||
+		[url hasSuffix:@".jpeg"] ||
+		[url hasSuffix:@".bmp" ] ||
+		[url hasSuffix:@".gif" ])
 	{
 		self.imageURL = nil;
 		self.imageURL = url;
 		self.isImage = YES;
-		NSString* htmlText = @"<html><body style='background-color:#333;margin:0px;padding:0px;'><img style='min-height:200px;margin:0px;padding:0px;width:100%;height:auto;' alt='' src='IMGSRC'/></body></html>";
-		htmlText = [ htmlText stringByReplacingOccurrencesOfString:@"IMGSRC" withString:url ];
+        
+		NSString* htmlText = @"<html style='width:100%;height:100%'><body style='background-image:url(IMGSRC);background-size:contain;background-position:center;background-repeat:no-repeat;'></body></html>";
+		htmlText = [htmlText stringByReplacingOccurrencesOfString:@"IMGSRC" withString:url];
 
 		[webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
-		
 	}
 	else
 	{
@@ -170,14 +171,22 @@
 	self.webView.hidden = NO;
 }
 
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    if (navigationType == UIWebViewNavigationTypeReload && self.isImage) {
+        return NO;
+    }
+    
+    return YES;
+}
 
-- (void)webViewDidStartLoad:(UIWebView *)sender {
+- (void)webViewDidStartLoad:(UIWebView *)sender
+{
 	self.addressLabel.text = @"Loading...";
 	self.backBtn.enabled = webView.canGoBack;
 	self.fwdBtn.enabled = webView.canGoForward;
 	
 	[self.spinner startAnimating];
-	
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)sender 
@@ -190,12 +199,14 @@
 	self.fwdBtn.enabled = webView.canGoForward;
 	[self.spinner stopAnimating];
 	
-	if (self.delegate != NULL) {
+	if (self.delegate != nil)
+    {
 		[self.delegate onChildLocationChange:request.URL.absoluteString];
 	}
 }
 
-- (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error {
+- (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error
+{
     NSLog (@"webView:didFailLoadWithError");
     NSLog (@"%@", [error localizedDescription]);
     NSLog (@"%@", [error localizedFailureReason]);
@@ -208,7 +219,6 @@
 
 - (void)resetControls
 {
-    
     CGRect rect = addressLabel.frame;
     rect.origin.y = self.view.frame.size.height-(44.0f+26.0f);
     [addressLabel setFrame:rect];
@@ -228,8 +238,7 @@
     CGRect rect = webView.frame;
     rect.size.height+=(-44.0f*isShow);
     [webView setFrame:rect];
-    if(isShow)
-        return;
+    if (isShow) return;
     
     [addressLabel setHidden:YES];
     [toolbar setHidden:YES];
@@ -238,8 +247,7 @@
 
 - (void)showAddress:(BOOL)isShow
 {
-    if(isShow)
-        return;
+    if (isShow) return;
     CGRect rect = webView.frame;
     rect.size.height+=(0);
     [webView setFrame:rect];
@@ -249,8 +257,7 @@
 
 - (void)showNavigationBar:(BOOL)isShow
 {
-    if(isShow)
-        return;
+    if (isShow) return;
     CGRect rect = webView.frame;
     rect.size.height+=(0);
     [webView setFrame:rect];
@@ -261,6 +268,7 @@
 }
 
 #pragma mark - CustomNavigationViewDelegate
+
 - (void)backButtonPressed
 {
     [self onDoneButtonPress:self];
@@ -283,6 +291,7 @@
     backButtonUrl = [newBackButtonUrl copy];
     [self.customNavigationBar setBackButton:backButtonUrl];
 }
+
 #pragma mark - Gesture Recognizer
 
 - (void)addGestureRecognizer
@@ -293,11 +302,6 @@
     [self.view addGestureRecognizer:closeRG];
     [closeRG release];
 }
-
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    return YES;
-//}
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {

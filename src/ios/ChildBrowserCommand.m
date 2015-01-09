@@ -70,22 +70,21 @@
     if ([options objectForKey:@"backButton"])
         childBrowser.backButtonUrl = [options objectForKey:@"backButton"];
     
-    [self.viewController presentModalViewController:self.childBrowser animated:YES];
-    
-    [self.childBrowser resetControls];
-    [self.childBrowser loadURL:url];
-    if([options objectForKey:@"showAddress"]!=nil)
-        [childBrowser showAddress:[[options objectForKey:@"showAddress"] boolValue]];
-    if([options objectForKey:@"showLocationBar"]!=nil)
-        [childBrowser showLocationBar:[[options objectForKey:@"showLocationBar"] boolValue]];
-    if([options objectForKey:@"showNavigationBar"]!=nil)
-        [childBrowser showNavigationBar:[[options objectForKey:@"showNavigationBar"] boolValue]];
+    [self.viewController presentViewController:self.childBrowser animated:YES completion:^{
+        [self.childBrowser resetControls];
+        [self.childBrowser loadURL:url];
+        if([options objectForKey:@"showAddress"]!=nil)
+            [childBrowser showAddress:[[options objectForKey:@"showAddress"] boolValue]];
+        if([options objectForKey:@"showLocationBar"]!=nil)
+            [childBrowser showLocationBar:[[options objectForKey:@"showLocationBar"] boolValue]];
+        if([options objectForKey:@"showNavigationBar"]!=nil)
+            [childBrowser showNavigationBar:[[options objectForKey:@"showNavigationBar"] boolValue]];
+    }];
 }
 
 -(void) close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
 {
     [self.childBrowser closeBrowser];
-	
 }
 
 -(void) onClose
