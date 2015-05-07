@@ -78,19 +78,24 @@
         [self.childBrowser resetControls];
         [self.childBrowser loadURL:url];
         
-        if([options objectForKey:@"showAddress"] != nil)
+        if ([options objectForKey:@"showAddress"] != nil)
         {
             [childBrowser showAddress:[[options objectForKey:@"showAddress"] boolValue]];
         }
         
-        if([options objectForKey:@"showLocationBar"] != nil)
+        if ([options objectForKey:@"showLocationBar"] != nil)
         {
             [childBrowser showLocationBar:[[options objectForKey:@"showLocationBar"] boolValue]];
         }
         
-        if([options objectForKey:@"showNavigationBar"] != nil)
+        if ([options objectForKey:@"showNavigationBar"] != nil)
         {
             [childBrowser showNavigationBar:[[options objectForKey:@"showNavigationBar"] boolValue]];
+        }
+        
+        if ([options objectForKey:@"showHeaderBar"] != nil)
+        {
+            [childBrowser showHeaderBar:[[options objectForKey:@"showTopBar"] boolValue]];
         }
     }];
 }

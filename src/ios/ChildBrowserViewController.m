@@ -14,6 +14,8 @@
 //Gesture Recognizer
 - (void)addGestureRecognizer;
 
+@property (nonatomic) BOOL canRotate;
+
 @end
 
 @implementation ChildBrowserViewController
@@ -21,7 +23,7 @@
 @synthesize imageURL, isImage, scaleEnabled;
 @synthesize delegate, orientationDelegate;
 @synthesize spinner, webView, addressLabel, toolbar;
-@synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn;
+@synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn, closeButton;
 @synthesize customNavigationBar, headerLogoUrl, backButtonUrl;
 
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
@@ -90,6 +92,7 @@
     [self.customNavigationBar release];
     [self.headerLogoUrl release];
     [self.backButtonUrl release];
+    [self.closeButton release];
     
 	[super dealloc];
 #endif
@@ -101,6 +104,9 @@
 	{
 		[self.delegate onClose];
 	}
+    
+    // Show status bar on close
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
     if ([self respondsToSelector:@selector(presentingViewController)])
     {
@@ -219,6 +225,8 @@
 
 - (void)resetControls
 {
+    self.canRotate = NO;
+    
     CGRect rect = addressLabel.frame;
     rect.origin.y = self.view.frame.size.height-(44.0f+26.0f);
     [addressLabel setFrame:rect];
@@ -228,6 +236,9 @@
     [webView setFrame:rect];
     [addressLabel setHidden:NO];
     [toolbar setHidden:NO];
+    [customNavigationBar setHidden:NO];
+    [closeButton setHidden:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (void)showLocationBar:(BOOL)isShow
@@ -265,6 +276,21 @@
     rect = addressLabel.frame;
     rect.origin.y+=0;
     [addressLabel setFrame:rect];
+}
+
+- (void)showHeaderBar:(BOOL)isShow
+{
+    if (isShow) return;
+    
+    self.canRotate = YES;
+    CGRect rect = webView.frame;
+    rect.origin.y = 0;
+    rect.size.height += NavigationViewHeight();
+    [webView setFrame:rect];
+    [customNavigationBar setHidden:YES];
+    [closeButton setHidden:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    [self.view setNeedsLayout];
 }
 
 #pragma mark - CustomNavigationViewDelegate
@@ -317,6 +343,8 @@
 
 - (BOOL)shouldAutorotate
 {
+    if (self.canRotate) return YES;
+    
     if ((self.orientationDelegate != nil) && [self.orientationDelegate respondsToSelector:@selector(shouldAutorotate)]) {
         return [self.orientationDelegate shouldAutorotate];
     }
@@ -325,6 +353,8 @@
 
 - (NSUInteger)supportedInterfaceOrientations
 {
+    if (self.canRotate) return UIInterfaceOrientationMaskAll;
+    
     if ((self.orientationDelegate != nil) && [self.orientationDelegate respondsToSelector:@selector(supportedInterfaceOrientations)]) {
         return [self.orientationDelegate supportedInterfaceOrientations];
     }
@@ -335,6 +365,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    if (self.canRotate) return YES;
+    
     if ((self.orientationDelegate != nil) && [self.orientationDelegate respondsToSelector:@selector(shouldAutorotateToInterfaceOrientation:)]) {
         return [self.orientationDelegate shouldAutorotateToInterfaceOrientation:interfaceOrientation];
     }
