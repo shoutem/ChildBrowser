@@ -14,8 +14,6 @@
 //Gesture Recognizer
 - (void)addGestureRecognizer;
 
-@property (nonatomic) BOOL canRotate;
-
 @end
 
 @implementation ChildBrowserViewController
@@ -39,7 +37,6 @@
 	return self;	
 }
 
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -60,17 +57,35 @@
     [self.view addSubview:self.customNavigationBar];
 }
 
-- (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-	NSLog(@"View did UN-load");
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    CGRect webViewFrame = self.view.frame;
+    webViewFrame.origin = CGPointZero;
+    
+    // Header
+    [self.customNavigationBar setHidden:!self.showHeader];
+    [self.closeButton setHidden:self.showHeader];
+    if (self.showHeader) {
+        webViewFrame.origin.y = NavigationViewHeight();
+        webViewFrame.size.height -= NavigationViewHeight();
+    } else {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    }
+    
+    // Toolbar
+    [self.toolbar setHidden:!self.showToolbar];
+    if (self.showToolbar) {
+        webViewFrame.size.height -= self.toolbar.frame.size.height;
+    }
+    
+    // Address
+    [self.addressLabel setHidden:!self.showAddress];
+    
+    [self.webView setFrame:webViewFrame];
+    [self.view setNeedsLayout];
 }
 
 - (void)dealloc
@@ -152,25 +167,19 @@
 {
 	NSLog(@"Opening Url : %@",url);
 	 
-	if ([url hasSuffix:@".png" ] ||
-	    [url hasSuffix:@".jpg" ] ||
-		[url hasSuffix:@".jpeg"] ||
-		[url hasSuffix:@".bmp" ] ||
-		[url hasSuffix:@".gif" ])
+	if (self.isImage)
 	{
-		self.imageURL = nil;
 		self.imageURL = url;
-		self.isImage = YES;
+        self.webView.backgroundColor = [UIColor blackColor];
         
-		NSString* htmlText = @"<html style='width:100%;height:100%'><body style='background-image:url(IMGSRC);background-size:contain;background-position:center;background-repeat:no-repeat;'></body></html>";
-		htmlText = [htmlText stringByReplacingOccurrencesOfString:@"IMGSRC" withString:url];
-
+		NSString *htmlText = [NSString stringWithFormat:@"<html style='width:100%%;height:100%%'><body style='background-image:url(%@);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:black;'></body></html>", url];
 		[webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
 	}
 	else
 	{
 		imageURL = @"";
-		isImage = NO;
+        self.webView.backgroundColor = [UIColor whiteColor];
+        
 		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
 		[self.webView loadRequest:request];
 	}
@@ -219,78 +228,6 @@
 
     [spinner stopAnimating];
     addressLabel.text = @"Failed";
-}
-
-#pragma mark - Disaplying Controls
-
-- (void)resetControls
-{
-    self.canRotate = NO;
-    
-    CGRect rect = addressLabel.frame;
-    rect.origin.y = self.view.frame.size.height-(44.0f+26.0f);
-    [addressLabel setFrame:rect];
-    rect=webView.frame;
-    rect.size.height= self.view.frame.size.height-(44.0f+NavigationViewHeight()-45.0f);
-    rect.origin.y = NavigationViewHeight();
-    [webView setFrame:rect];
-    [addressLabel setHidden:NO];
-    [toolbar setHidden:NO];
-    [customNavigationBar setHidden:NO];
-    [closeButton setHidden:YES];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-}
-
-- (void)showLocationBar:(BOOL)isShow
-{
-    self.showingNavigation = isShow;
-    
-    //the addreslabel heigth 21 toolbar 44
-    CGRect rect = webView.frame;
-    rect.size.height+=(-44.0f*isShow);
-    [webView setFrame:rect];
-    if (isShow) return;
-    
-    [addressLabel setHidden:YES];
-    [toolbar setHidden:YES];
-    [self.view setNeedsLayout];
-}
-
-- (void)showAddress:(BOOL)isShow
-{
-    if (isShow) return;
-    CGRect rect = webView.frame;
-    rect.size.height+=(0);
-    [webView setFrame:rect];
-    [addressLabel setHidden:YES];
-    
-}
-
-- (void)showNavigationBar:(BOOL)isShow
-{
-    if (isShow) return;
-    CGRect rect = webView.frame;
-    rect.size.height+=(0);
-    [webView setFrame:rect];
-    [toolbar setHidden:YES];
-    rect = addressLabel.frame;
-    rect.origin.y+=0;
-    [addressLabel setFrame:rect];
-}
-
-- (void)showHeaderBar:(BOOL)isShow
-{
-    if (isShow) return;
-    
-    self.canRotate = YES;
-    CGRect rect = webView.frame;
-    rect.origin.y = 0;
-    rect.size.height += NavigationViewHeight();
-    [webView setFrame:rect];
-    [customNavigationBar setHidden:YES];
-    [closeButton setHidden:NO];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-    [self.view setNeedsLayout];
 }
 
 #pragma mark - CustomNavigationViewDelegate

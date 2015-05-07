@@ -55,17 +55,15 @@
 @property (nonatomic, copy) NSString *backButtonUrl;
 @property (assign) BOOL showingNavigation;
 
+@property (nonatomic, assign) BOOL showAddress;
+@property (nonatomic, assign) BOOL showToolbar;
+@property (nonatomic, assign) BOOL showHeader;
+@property (nonatomic, assign) BOOL canRotate;
+
 - (ChildBrowserViewController *)initWithScale:(BOOL)enabled;
 - (IBAction)onDoneButtonPress:(id)sender;
 - (IBAction)onSafariButtonPress:(id)sender;
 - (void)loadURL:(NSString *)url;
 - (void)closeBrowser;
-
-//Displaying Controls
-- (void)resetControls;
-- (void)showAddress:(BOOL)isShow;       // display address bar
-- (void)showLocationBar:(BOOL)isShow;   // display the whole location bar
-- (void)showNavigationBar:(BOOL)isShow; // display navigation buttons
-- (void)showHeaderBar:(BOOL)isShow;     // display header bar
 
 @end

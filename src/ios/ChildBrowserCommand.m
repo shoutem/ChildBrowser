@@ -74,29 +74,14 @@
         childBrowser.backButtonUrl = [options objectForKey:@"backButton"];
     }
     
+    childBrowser.showAddress = [[options objectForKey:@"showAddress"] boolValue];
+    childBrowser.showToolbar = [[options objectForKey:@"showToolbar"] boolValue];
+    childBrowser.showHeader = [[options objectForKey:@"showHeader"] boolValue];
+    childBrowser.canRotate = [[options objectForKey:@"canRotate"] boolValue];
+    childBrowser.isImage = [[options objectForKey:@"isImage"] boolValue];
+    
     [self.viewController presentViewController:self.childBrowser animated:YES completion:^{
-        [self.childBrowser resetControls];
         [self.childBrowser loadURL:url];
-        
-        if ([options objectForKey:@"showAddress"] != nil)
-        {
-            [childBrowser showAddress:[[options objectForKey:@"showAddress"] boolValue]];
-        }
-        
-        if ([options objectForKey:@"showLocationBar"] != nil)
-        {
-            [childBrowser showLocationBar:[[options objectForKey:@"showLocationBar"] boolValue]];
-        }
-        
-        if ([options objectForKey:@"showNavigationBar"] != nil)
-        {
-            [childBrowser showNavigationBar:[[options objectForKey:@"showNavigationBar"] boolValue]];
-        }
-        
-        if ([options objectForKey:@"showHeaderBar"] != nil)
-        {
-            [childBrowser showHeaderBar:[[options objectForKey:@"showTopBar"] boolValue]];
-        }
     }];
 }
 
