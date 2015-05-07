@@ -171,6 +171,7 @@
 	{
 		self.imageURL = url;
         self.webView.backgroundColor = [UIColor blackColor];
+        self.webView.scrollView.bounces = NO;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
         
 		NSString *htmlText = [NSString stringWithFormat:@"<html style='width:100%%;height:100%%'><body style='background-image:url(%@);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:black;'></body></html>", url];
@@ -180,6 +181,7 @@
 	{
 		imageURL = @"";
         self.webView.backgroundColor = [UIColor whiteColor];
+        self.webView.scrollView.bounces = YES;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         
 		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
@@ -311,6 +313,15 @@
     }
 
     return YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    UIScrollView *scrollView = [self.webView scrollView];
+    CGRect content = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
+    [scrollView zoomToRect:content animated:YES];
 }
 
 @end
