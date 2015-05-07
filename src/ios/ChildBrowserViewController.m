@@ -171,6 +171,7 @@
 	{
 		self.imageURL = url;
         self.webView.backgroundColor = [UIColor blackColor];
+        self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
         
 		NSString *htmlText = [NSString stringWithFormat:@"<html style='width:100%%;height:100%%'><body style='background-image:url(%@);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:black;'></body></html>", url];
 		[webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
@@ -179,6 +180,7 @@
 	{
 		imageURL = @"";
         self.webView.backgroundColor = [UIColor whiteColor];
+        self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         
 		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
 		[self.webView loadRequest:request];
