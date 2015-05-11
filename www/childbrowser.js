@@ -68,7 +68,7 @@ var ChildBrowser = (function (gap) {
      */
     ChildBrowser.showWebPage = function (url, options, urlLoadedCallback) {
         if (!options) {
-            options = { showLocationBar: true };
+            options = { showHeader: true, showToolbar: true };
         }
         
         ChildBrowser.onLocationChange = urlLoadedCallback;

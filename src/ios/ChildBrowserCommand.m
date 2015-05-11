@@ -15,7 +15,7 @@
 
 @synthesize callbackId, childBrowser, CLOSE_EVENT, LOCATION_CHANGE_EVENT, OPEN_EXTERNAL_EVENT;
 
-- (id) initWithWebView:(UIWebView*)theWebView
+- (id)initWithWebView:(UIWebView*)theWebView
 {
     self = [super initWithWebView:theWebView];
 
@@ -26,14 +26,13 @@
     return self;
 }
 
--(void) openExternal:(CDVInvokedUrlCommand *)command
+- (void)openExternal:(CDVInvokedUrlCommand *)command
 {
     NSString *url = [command argumentAtIndex:0];
-    
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
 }
 
--(void) showWebPage:(CDVInvokedUrlCommand *)command
+- (void)showWebPage:(CDVInvokedUrlCommand *)command
 {	
     self.callbackId = command.callbackId;
 
@@ -41,7 +40,9 @@
     NSString *url = [command argumentAtIndex:0];
     
     if ([url hasPrefix:kOpenWebPageInBrowserPrefix])
+    {
         url = [url substringFromIndex:[kOpenWebPageInBrowserPrefix length]];
+    }
     
     NSURL *finalUrl = [NSURL URLWithString:url];
     
@@ -50,7 +51,6 @@
         [[UIApplication sharedApplication] openURL:finalUrl];
         return;
     }
-    
     
     if (self.childBrowser == nil) {
 #if __has_feature(objc_arc)
@@ -65,64 +65,67 @@
     NSDictionary *options = [command argumentAtIndex:1];
     
     if ([options objectForKey:@"navigationBarLogo"])
+    {
         childBrowser.headerLogoUrl = [options objectForKey:@"navigationBarLogo"];
+    }
 
     if ([options objectForKey:@"backButton"])
+    {
         childBrowser.backButtonUrl = [options objectForKey:@"backButton"];
+    }
+    
+    childBrowser.showAddress = [[options objectForKey:@"showAddress"] boolValue];
+    childBrowser.showToolbar = [[options objectForKey:@"showToolbar"] boolValue];
+    childBrowser.showHeader = [[options objectForKey:@"showHeader"] boolValue];
+    childBrowser.canRotate = [[options objectForKey:@"canRotate"] boolValue];
+    childBrowser.isImage = [[options objectForKey:@"isImage"] boolValue];
     
     [self.viewController presentViewController:self.childBrowser animated:YES completion:^{
-        [self.childBrowser resetControls];
         [self.childBrowser loadURL:url];
-        if([options objectForKey:@"showAddress"]!=nil)
-            [childBrowser showAddress:[[options objectForKey:@"showAddress"] boolValue]];
-        if([options objectForKey:@"showLocationBar"]!=nil)
-            [childBrowser showLocationBar:[[options objectForKey:@"showLocationBar"] boolValue]];
-        if([options objectForKey:@"showNavigationBar"]!=nil)
-            [childBrowser showNavigationBar:[[options objectForKey:@"showNavigationBar"] boolValue]];
     }];
 }
 
--(void) close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
+- (void)close:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options // args: url
 {
     [self.childBrowser closeBrowser];
 }
 
--(void) onClose
+- (void)onClose
 {
     CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                      messageAsDictionary:[self dictionaryForEvent:CLOSE_EVENT]];
+                                            messageAsDictionary:[self dictionaryForEvent:CLOSE_EVENT]];
     [result setKeepCallbackAsBool:YES];
 
-    [self writeJavascript: [result toSuccessCallbackString:self.callbackId]];
+    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
 }
 
--(void) onOpenInSafari
+- (void)onOpenInSafari
 {
 	CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                      messageAsDictionary:[self dictionaryForEvent:OPEN_EXTERNAL_EVENT]];
+                                            messageAsDictionary:[self dictionaryForEvent:OPEN_EXTERNAL_EVENT]];
     [result setKeepCallbackAsBool:YES];
 
-    [self writeJavascript: [result toSuccessCallbackString:self.callbackId]];
+    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
 }
 
 
--(void) onChildLocationChange:(NSString*)newLoc
+- (void)onChildLocationChange:(NSString *)newLoc
 {
-	NSString* tempLoc = [NSString stringWithFormat:@"%@",newLoc];
-	NSString* encUrl = [tempLoc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSString *tempLoc = [NSString stringWithFormat:@"%@", newLoc];
+	NSString *encUrl = [tempLoc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[self dictionaryForEvent:LOCATION_CHANGE_EVENT]];
 
     [dict setObject:encUrl forKey:@"location"];
 
     CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                      messageAsDictionary:dict];
+                                            messageAsDictionary:dict];
     [result setKeepCallbackAsBool:YES];
 
-    [self writeJavascript: [result toSuccessCallbackString:self.callbackId]];
+    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
 }
 
--(NSDictionary*) dictionaryForEvent:(NSNumber*) event
+- (NSDictionary *)dictionaryForEvent:(NSNumber *)event
 {
     return [NSDictionary dictionaryWithObject:event forKey:@"type"];
 }

@@ -9,7 +9,7 @@
 #import <Cordova/CDVPlugin.h>
 #import "ChildBrowserViewController.h"
 
-@interface ChildBrowserCommand : CDVPlugin <ChildBrowserDelegate>  { }
+@interface ChildBrowserCommand : CDVPlugin <ChildBrowserDelegate>
 
 @property (nonatomic, retain) ChildBrowserViewController *childBrowser;
 @property (nonatomic, strong) NSString *callbackId;
@@ -17,11 +17,11 @@
 @property (nonatomic, strong) NSNumber *LOCATION_CHANGE_EVENT;
 @property (nonatomic, strong) NSNumber *OPEN_EXTERNAL_EVENT;
 
--(void) showWebPage:(CDVInvokedUrlCommand *)command;
--(void) openExternal:(CDVInvokedUrlCommand *)command;
+-(void)showWebPage:(CDVInvokedUrlCommand *)command;
+-(void)openExternal:(CDVInvokedUrlCommand *)command;
 
--(void) onChildLocationChange:(NSString*)newLoc;
+-(void)onChildLocationChange:(NSString *)newLoc;
 
--(NSDictionary*) dictionaryForEvent:(NSNumber*)event;
+-(NSDictionary *)dictionaryForEvent:(NSNumber *)event;
 
 @end
