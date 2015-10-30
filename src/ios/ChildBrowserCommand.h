@@ -19,6 +19,7 @@
 
 -(void)showWebPage:(CDVInvokedUrlCommand *)command;
 -(void)openExternal:(CDVInvokedUrlCommand *)command;
+-(void)close:(CDVInvokedUrlCommand *)command;
 
 -(void)onChildLocationChange:(NSString *)newLoc;
 
