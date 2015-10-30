@@ -85,11 +85,7 @@
     }];
 }
 
-- (void)close:(CDVInvokedUrlCommand *)command {
-    [self.childBrowser closeBrowser];
-}
-
-- (void)close:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options // args: url
+- (void)close:(CDVInvokedUrlCommand *)command
 {
     [self.childBrowser closeBrowser];
 }
