@@ -24,6 +24,9 @@
 @synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn, closeButton;
 @synthesize customNavigationBar, headerLogoUrl, backButtonUrl;
 
+int iPhoneX_header = 20;
+Boolean isIphoneX;
+
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
 {
     self = [super init];
@@ -52,6 +55,14 @@
 	self.webView.scalesPageToFit = YES;
 	self.webView.backgroundColor = [UIColor whiteColor];
     
+    CGRect rx = [ UIScreen mainScreen ].bounds;
+    isIphoneX = rx.size.width == 375 && rx.size.height == 812 ? YES : NO;
+    
+    float y = 0;
+    if (isIphoneX) {
+        y = iPhoneX_header;
+    }
+    
     self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
     self.customNavigationBar.delegate = self;
     [self.view addSubview:self.customNavigationBar];
@@ -69,8 +80,13 @@
     [self.customNavigationBar setHidden:!self.showHeader];
     [self.closeButton setHidden:self.showHeader];
     if (self.showHeader) {
-        webViewFrame.origin.y = NavigationViewHeight();
-        webViewFrame.size.height -= NavigationViewHeight();
+        if (isIphoneX) {
+            webViewFrame.origin.y = NavigationViewHeight() + iPhoneX_header;
+            webViewFrame.size.height -= NavigationViewHeight();
+        } else {
+            webViewFrame.origin.y = NavigationViewHeight();
+            webViewFrame.size.height -= NavigationViewHeight();
+        }
     } else {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
@@ -78,7 +94,11 @@
     // Toolbar
     [self.toolbar setHidden:!self.showToolbar];
     if (self.showToolbar) {
-        webViewFrame.size.height -= self.toolbar.frame.size.height;
+        if (isIphoneX) {
+            webViewFrame.size.height -= self.toolbar.frame.size.height + iPhoneX_header;
+        } else {
+            webViewFrame.size.height -= self.toolbar.frame.size.height;
+        }
     }
     
     // Address
