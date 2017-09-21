@@ -24,9 +24,6 @@
 @synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn, closeButton;
 @synthesize customNavigationBar, headerLogoUrl, backButtonUrl;
 
-int iPhoneX_header = 20;
-Boolean isIphoneX;
-
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
 {
     self = [super init];
@@ -55,14 +52,6 @@ Boolean isIphoneX;
 	self.webView.scalesPageToFit = YES;
 	self.webView.backgroundColor = [UIColor whiteColor];
     
-    CGRect rx = [ UIScreen mainScreen ].bounds;
-    isIphoneX = rx.size.width == 375 && rx.size.height == 812 ? YES : NO;
-    
-    float y = 0;
-    if (isIphoneX) {
-        y = iPhoneX_header;
-    }
-    
     self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
     self.customNavigationBar.delegate = self;
     [self.view addSubview:self.customNavigationBar];
@@ -80,13 +69,8 @@ Boolean isIphoneX;
     [self.customNavigationBar setHidden:!self.showHeader];
     [self.closeButton setHidden:self.showHeader];
     if (self.showHeader) {
-        if (isIphoneX) {
-            webViewFrame.origin.y = NavigationViewHeight() + iPhoneX_header;
-            webViewFrame.size.height -= NavigationViewHeight();
-        } else {
-            webViewFrame.origin.y = NavigationViewHeight();
-            webViewFrame.size.height -= NavigationViewHeight();
-        }
+        webViewFrame.origin.y = NavigationViewHeight();
+        webViewFrame.size.height -= NavigationViewHeight() - 20;
     } else {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
@@ -94,10 +78,14 @@ Boolean isIphoneX;
     // Toolbar
     [self.toolbar setHidden:!self.showToolbar];
     if (self.showToolbar) {
+        webViewFrame.size.height -= self.toolbar.frame.size.height;
+        CGRect rx = [ UIScreen mainScreen ].bounds;
+        Boolean isIphoneX = rx.size.width == 375 && rx.size.height == 812 ? YES : NO;
         if (isIphoneX) {
-            webViewFrame.size.height -= self.toolbar.frame.size.height + iPhoneX_header;
-        } else {
-            webViewFrame.size.height -= self.toolbar.frame.size.height;
+            CGRect toolbarFrame = self.toolbar.frame;
+            toolbarFrame.origin.y = self.view.frame.size.height - 78;
+            [self.toolbar setFrame:toolbarFrame];
+            webViewFrame.size.height -= 18;
         }
     }
     
