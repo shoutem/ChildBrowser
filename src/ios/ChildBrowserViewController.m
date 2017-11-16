@@ -70,7 +70,7 @@
     [self.closeButton setHidden:self.showHeader];
     if (self.showHeader) {
         webViewFrame.origin.y = NavigationViewHeight();
-        webViewFrame.size.height -= NavigationViewHeight();
+        webViewFrame.size.height -= NavigationViewHeight() - 20;
     } else {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
@@ -79,6 +79,14 @@
     [self.toolbar setHidden:!self.showToolbar];
     if (self.showToolbar) {
         webViewFrame.size.height -= self.toolbar.frame.size.height;
+        CGRect rx = [ UIScreen mainScreen ].bounds;
+        Boolean isIphoneX = rx.size.width == 375 && rx.size.height == 812 ? YES : NO;
+        if (isIphoneX) {
+            CGRect toolbarFrame = self.toolbar.frame;
+            toolbarFrame.origin.y = self.view.frame.size.height - 78;
+            [self.toolbar setFrame:toolbarFrame];
+            webViewFrame.size.height -= 18;
+        }
     }
     
     // Address
