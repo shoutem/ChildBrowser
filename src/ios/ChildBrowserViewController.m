@@ -203,10 +203,9 @@ int toolBarHeight;
         self.webView.scrollView.bounces = YES;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         
-        if ([url rangeOfString:@"%"].location == NSNotFound) {
-            url = [url stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLQueryAllowedCharacterSet]];
-        }
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];;
+        //NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+        NSString* urlTextEscaped = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlTextEscaped]];
         [self.webView loadRequest:request];
     }
     self.webView.hidden = NO;
