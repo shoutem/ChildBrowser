@@ -204,8 +204,6 @@ int toolBarHeight;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-//        NSString* urlTextEscaped = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-//        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlTextEscaped]];
         [self.webView loadRequest:request];
     }
     self.webView.hidden = NO;
