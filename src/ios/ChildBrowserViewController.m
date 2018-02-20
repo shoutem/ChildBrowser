@@ -203,14 +203,11 @@ int toolBarHeight;
         self.webView.scrollView.bounces = YES;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         
-<<<<<<< HEAD
-=======
         NSString *decoded = [url stringByRemovingPercentEncoding];
         if ([url isEqualToString:decoded]) {
             // The URL was not encoded yet
             url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         }
->>>>>>> feature/AG-2069_IOS_doesn't_open_Calendar_PDF_links_using_CMS_integrated_calendars
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
         [self.webView loadRequest:request];
     }
