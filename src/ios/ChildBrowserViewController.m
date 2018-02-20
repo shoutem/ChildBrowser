@@ -24,37 +24,40 @@
 @synthesize closeBtn, refreshBtn, backBtn, fwdBtn, safariBtn, closeButton;
 @synthesize customNavigationBar, headerLogoUrl, backButtonUrl;
 
+int toolBarHeight;
+
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled
 {
     self = [super init];
-	if(self!=nil)
+    if(self!=nil)
     {
         [self addGestureRecognizer];
     }
-	
-	self.scaleEnabled = enabled;
-	
-	return self;	
+    
+    self.scaleEnabled = enabled;
+    
+    return self;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-	self.refreshBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/but_refresh"];
+    self.refreshBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/but_refresh"];
     self.backBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_left.png"];
-	self.fwdBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_right.png"];
-	self.safariBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/compass.png"];
+    self.fwdBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/arrow_right.png"];
+    self.safariBtn.image = [UIImage imageNamed:@"ChildBrowser.bundle/compass.png"];
     
     self.spinner.center = self.view.center;
-
-	self.webView.delegate = self;
-	self.webView.scalesPageToFit = YES;
-	self.webView.backgroundColor = [UIColor whiteColor];
+    
+    self.webView.delegate = self;
+    self.webView.scalesPageToFit = YES;
+    self.webView.backgroundColor = [UIColor whiteColor];
     
     self.customNavigationBar = [[[CustomNavigationView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [[UIScreen mainScreen] bounds].size.width, NavigationViewHeight()) andHeaderLogoUrl:self.headerLogoUrl] autorelease];
     self.customNavigationBar.delegate = self;
     [self.view addSubview:self.customNavigationBar];
+    toolBarHeight = 0;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -76,9 +79,16 @@
     }
     
     // Toolbar
-    [self.toolbar setHidden:!self.showToolbar];
-    if (self.showToolbar) {
-        webViewFrame.size.height -= self.toolbar.frame.size.height;
+    [self.toolbar setHidden:!(self.showToolbar || IS_IPHONE_X())];
+    if (self.showToolbar || IS_IPHONE_X()) {
+        if (IS_IPHONE_X()) {
+            CGRect toolbarFrame = self.toolbar.frame;
+            toolbarFrame.origin.y = self.view.frame.size.height - 78;
+            [self.toolbar setFrame:toolbarFrame];
+            webViewFrame.size.height -= 42 + toolBarHeight;
+        } else {
+            webViewFrame.size.height -= self.toolbar.frame.size.height;
+        }
     }
     
     // Address
@@ -86,39 +96,40 @@
     
     [self.webView setFrame:webViewFrame];
     [self.view setNeedsLayout];
+    toolBarHeight = 32;
 }
 
 - (void)dealloc
 {
-	self.webView.delegate = nil;
+    self.webView.delegate = nil;
     self.delegate = nil;
     self.orientationDelegate = nil;
-	
+    
 #if !__has_feature(objc_arc)
-	[self.webView release];
-	[self.closeBtn release];
-	[self.refreshBtn release];
-	[self.addressLabel release];
-	[self.backBtn release];
-	[self.fwdBtn release];
-	[self.safariBtn release];
-	[self.spinner release];
+    [self.webView release];
+    [self.closeBtn release];
+    [self.refreshBtn release];
+    [self.addressLabel release];
+    [self.backBtn release];
+    [self.fwdBtn release];
+    [self.safariBtn release];
+    [self.spinner release];
     [self.toolbar release];
     [self.customNavigationBar release];
     [self.headerLogoUrl release];
     [self.backButtonUrl release];
     [self.closeButton release];
     
-	[super dealloc];
+    [super dealloc];
 #endif
 }
 
 - (void)closeBrowser
 {
-	if (self.delegate != nil)
-	{
-		[self.delegate onClose];
-	}
+    if (self.delegate != nil)
+    {
+        [self.delegate onClose];
+    }
     
     // Show status bar on close
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
@@ -145,7 +156,7 @@
 - (IBAction)onDoneButtonPress:(id)sender
 {
     [self.webView stopLoading];
-	[self closeBrowser];
+    [self closeBrowser];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]];
     [self.webView loadRequest:request];
@@ -154,48 +165,53 @@
 
 - (IBAction)onSafariButtonPress:(id)sender
 {
-	if (self.delegate != nil)
-	{
-		[self.delegate onOpenInSafari];
-	}
-	
-	if (isImage)
-	{
-		NSURL* pURL = [[[NSURL alloc] initWithString:imageURL] autorelease];
-		[[UIApplication sharedApplication] openURL:pURL];
-	}
-	else
-	{
-		NSURLRequest *request = webView.request;
-		[[UIApplication sharedApplication] openURL:request.URL];
-	}
+    if (self.delegate != nil)
+    {
+        [self.delegate onOpenInSafari];
+    }
+    
+    if (isImage)
+    {
+        NSURL* pURL = [[[NSURL alloc] initWithString:imageURL] autorelease];
+        [[UIApplication sharedApplication] openURL:pURL];
+    }
+    else
+    {
+        NSURLRequest *request = webView.request;
+        [[UIApplication sharedApplication] openURL:request.URL];
+    }
 }
 
 - (void)loadURL:(NSString*)url
 {
-	NSLog(@"Opening Url : %@",url);
-	 
-	if (self.isImage)
-	{
-		self.imageURL = url;
+    NSLog(@"Opening Url : %@",url);
+    
+    if (self.isImage)
+    {
+        self.imageURL = url;
         self.webView.backgroundColor = [UIColor blackColor];
         self.webView.scrollView.bounces = NO;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
         
-		NSString *htmlText = [NSString stringWithFormat:@"<html style='width:100%%;height:100%%'><body style='background-image:url(%@);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:black;'></body></html>", url];
-		[webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
-	}
-	else
-	{
-		imageURL = @"";
+        NSString *htmlText = [NSString stringWithFormat:@"<html style='width:100%%;height:100%%'><body style='background-image:url(%@);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:black;'></body></html>", url];
+        [webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
+    }
+    else
+    {
+        imageURL = @"";
         self.webView.backgroundColor = [UIColor whiteColor];
         self.webView.scrollView.bounces = YES;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         
-		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-		[self.webView loadRequest:request];
-	}
-	self.webView.hidden = NO;
+        NSString *decoded = [url stringByRemovingPercentEncoding];
+        if ([url isEqualToString:decoded]) {
+            // The URL was not encoded yet
+            url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        }
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+        [self.webView loadRequest:request];
+    }
+    self.webView.hidden = NO;
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -209,27 +225,27 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)sender
 {
-	self.addressLabel.text = @"Loading...";
-	self.backBtn.enabled = webView.canGoBack;
-	self.fwdBtn.enabled = webView.canGoForward;
-	
-	[self.spinner startAnimating];
+    self.addressLabel.text = @"Loading...";
+    self.backBtn.enabled = webView.canGoBack;
+    self.fwdBtn.enabled = webView.canGoForward;
+    
+    [self.spinner startAnimating];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)sender 
+- (void)webViewDidFinishLoad:(UIWebView *)sender
 {
-	NSURLRequest *request = self.webView.request;
-	NSLog(@"New Address is : %@",request.URL.absoluteString);
-
-	self.addressLabel.text = request.URL.absoluteString;
-	self.backBtn.enabled = webView.canGoBack;
-	self.fwdBtn.enabled = webView.canGoForward;
-	[self.spinner stopAnimating];
-	
-	if (self.delegate != nil)
+    NSURLRequest *request = self.webView.request;
+    NSLog(@"New Address is : %@",request.URL.absoluteString);
+    
+    self.addressLabel.text = request.URL.absoluteString;
+    self.backBtn.enabled = webView.canGoBack;
+    self.fwdBtn.enabled = webView.canGoForward;
+    [self.spinner stopAnimating];
+    
+    if (self.delegate != nil)
     {
-		[self.delegate onChildLocationChange:request.URL.absoluteString];
-	}
+        [self.delegate onChildLocationChange:request.URL.absoluteString];
+    }
 }
 
 - (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error
@@ -237,7 +253,7 @@
     NSLog (@"webView:didFailLoadWithError");
     NSLog (@"%@", [error localizedDescription]);
     NSLog (@"%@", [error localizedFailureReason]);
-
+    
     [spinner stopAnimating];
     addressLabel.text = @"Failed";
 }
@@ -307,7 +323,7 @@
     if ((self.orientationDelegate != nil) && [self.orientationDelegate respondsToSelector:@selector(supportedInterfaceOrientations)]) {
         return [self.orientationDelegate supportedInterfaceOrientations];
     }
-
+    
     // return UIInterfaceOrientationMaskPortrait; // NO - is IOS 6 only
     return (1 << UIInterfaceOrientationPortrait);
 }
@@ -319,7 +335,7 @@
     if ((self.orientationDelegate != nil) && [self.orientationDelegate respondsToSelector:@selector(shouldAutorotateToInterfaceOrientation:)]) {
         return [self.orientationDelegate shouldAutorotateToInterfaceOrientation:interfaceOrientation];
     }
-
+    
     return YES;
 }
 
@@ -333,3 +349,4 @@
 }
 
 @end
+
