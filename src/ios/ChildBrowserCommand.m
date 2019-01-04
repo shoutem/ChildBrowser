@@ -15,15 +15,10 @@
 
 @synthesize callbackId, childBrowser, CLOSE_EVENT, LOCATION_CHANGE_EVENT, OPEN_EXTERNAL_EVENT;
 
-- (id)initWithWebView:(UIWebView*)theWebView
-{
-    self = [super initWithWebView:theWebView];
-
+- (void)pluginInitialize {
     CLOSE_EVENT = [NSNumber numberWithInt:0];
     LOCATION_CHANGE_EVENT = [NSNumber numberWithInt:1];
     OPEN_EXTERNAL_EVENT = [NSNumber numberWithInt:2];
-
-    return self;
 }
 
 - (void)openExternal:(CDVInvokedUrlCommand *)command
@@ -96,7 +91,8 @@
                                             messageAsDictionary:[self dictionaryForEvent:CLOSE_EVENT]];
     [result setKeepCallbackAsBool:YES];
 
-    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+    [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+//    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
 }
 
 - (void)onOpenInSafari
@@ -105,7 +101,8 @@
                                             messageAsDictionary:[self dictionaryForEvent:OPEN_EXTERNAL_EVENT]];
     [result setKeepCallbackAsBool:YES];
 
-    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+    [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+//    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
 }
 
 
@@ -122,7 +119,8 @@
                                             messageAsDictionary:dict];
     [result setKeepCallbackAsBool:YES];
 
-    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+    [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+//    [self writeJavascript:[result toSuccessCallbackString:self.callbackId]];
 }
 
 - (NSDictionary *)dictionaryForEvent:(NSNumber *)event
