@@ -212,7 +212,11 @@ int toolBarHeight;
         self.webView.backgroundColor = [UIColor whiteColor];
         self.webView.scrollView.bounces = YES;
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-        
+        NSString *decoded = [url stringByRemovingPercentEncoding];
+        if ([url isEqualToString:decoded]) {
+            // The URL was not encoded yet
+            url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        }
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
         [self.webView loadRequest:request];
     }
