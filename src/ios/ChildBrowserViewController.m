@@ -79,11 +79,21 @@ int toolBarHeight;
     }
     
     // Toolbar
-    [self.toolbar setHidden:!(self.showToolbar || IS_IPHONE_X())];
-    if (self.showToolbar || IS_IPHONE_X()) {
+    [self.toolbar setHidden:!(self.showToolbar || IS_IPHONE_X() || IS_IPHONE_XR() || IS_IPHONE_XS_MAX())];
+    if (self.showToolbar || IS_IPHONE_X() || IS_IPHONE_XR() || IS_IPHONE_XS_MAX()) {
         if (IS_IPHONE_X()) {
             CGRect toolbarFrame = self.toolbar.frame;
             toolbarFrame.origin.y = self.view.frame.size.height - 78;
+            [self.toolbar setFrame:toolbarFrame];
+            webViewFrame.size.height -= 42 + toolBarHeight;
+        } else if (IS_IPHONE_XR()) {
+            CGRect toolbarFrame = self.toolbar.frame;
+            toolbarFrame.origin.y = self.view.frame.size.height - 88;
+            [self.toolbar setFrame:toolbarFrame];
+            webViewFrame.size.height -= 42 + toolBarHeight;
+        } else if (IS_IPHONE_XS_MAX()) {
+            CGRect toolbarFrame = self.toolbar.frame;
+            toolbarFrame.origin.y = self.view.frame.size.height - 88;
             [self.toolbar setFrame:toolbarFrame];
             webViewFrame.size.height -= 42 + toolBarHeight;
         } else {
